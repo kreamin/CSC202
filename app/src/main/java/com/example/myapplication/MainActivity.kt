@@ -1,6 +1,8 @@
 package com.example.myapplication
 
+import android.app.appsearch.AppSearchSchema.BooleanPropertyConfig
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -16,13 +18,16 @@ import kotlinx.coroutines.launch
 interface Question {
     val text: String
     fun isCorrectAnswer(answer: Boolean): Boolean
+    val answered: Boolean
 }
 
 data class TrueFalseQuestion(
     override val text: String,
-    val correctAnswer: Boolean
+    val correctAnswer: Boolean,
+    override var answered: Boolean = false
 ): Question {
     override fun isCorrectAnswer(answer: Boolean): Boolean {
+        answered = true
         return answer == correctAnswer
     }
 }
@@ -50,6 +55,8 @@ val questions: List<Question> = listOf(
 class MainActivity : AppCompatActivity() {
     lateinit var trueButton: Button
     lateinit var falseButton: Button
+    lateinit var nextButton: Button
+    lateinit var previousButton: Button
     lateinit var questionNum: TextView
     lateinit var questionTxt: TextView
     var currentQuestion: Int = 0
@@ -67,6 +74,26 @@ class MainActivity : AppCompatActivity() {
         questionTxt = findViewById(R.id.questionText)
         trueButton = findViewById(R.id.trueButton)
         falseButton = findViewById(R.id.falseButton)
+        nextButton = findViewById(R.id.Next)
+        previousButton = findViewById(R.id.Previous)
+
+        previousButton.setOnClickListener{ view: View ->
+            if (currentQuestion == 0) {
+                println("cant do that")
+            } else {
+                currentQuestion--
+                showQuestion()
+            }
+        }
+
+        nextButton.setOnClickListener{ view: View ->
+            if (currentQuestion + 1 == questions.size) {
+                Log.w("cant do that", "cant do that")
+            } else {
+                currentQuestion++
+                showQuestion()
+            }
+        }
 
         trueButton.setOnClickListener{ view: View ->
             val correct = questions[currentQuestion].isCorrectAnswer(true)
@@ -86,6 +113,13 @@ class MainActivity : AppCompatActivity() {
         val question = questions[currentQuestion]
         questionNum.text = "Question: ${currentQuestion + 1}"
         questionTxt.text = question.text
+        if (questions[currentQuestion].answered) {
+            trueButton.isEnabled = false
+            falseButton.isEnabled = false
+        } else {
+            trueButton.isEnabled = true
+            falseButton.isEnabled = true
+        }
     }
 
     fun nextQuestion(correct: Boolean) {

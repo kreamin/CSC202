@@ -37,8 +37,6 @@
         android:id="@+id/trueButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="124dp"
-        android:layout_marginEnd="2dp"
         android:layout_marginBottom="366dp"
         android:text="True"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -51,8 +49,6 @@
         android:id="@+id/falseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="1dp"
-        android:layout_marginEnd="109dp"
         android:layout_marginBottom="366dp"
         android:text="False"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -60,5 +56,29 @@
         app:layout_constraintStart_toEndOf="@+id/trueButton"
         app:layout_constraintTop_toBottomOf="@+id/questionNum"
         app:layout_constraintVertical_bias="0.475" />
+
+    <Button
+        android:id="@+id/Previous"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="199dp"
+        android:layout_marginBottom="206dp"
+        android:text="Previous"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/trueButton"
+        app:layout_constraintTop_toBottomOf="@+id/trueButton"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/Next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="199dp"
+        android:layout_marginBottom="206dp"
+        android:text="Next"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/falseButton"
+        app:layout_constraintTop_toBottomOf="@+id/falseButton"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
