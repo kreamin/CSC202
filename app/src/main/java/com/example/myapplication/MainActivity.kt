@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 import QuizViewModel
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -18,7 +19,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val quizViewModel: QuizViewModel by viewModels()
 
-    var currentIndex: Int = 0
+    private var cheated = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -31,8 +33,17 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        binding.CheatButton.setOnClickListener{ view: View ->
+            if (!cheated) {
+                cheated = true
+            }
+            val intentToCheat = Intent(this, CheatActivity::class.java)
+            intentToCheat.putExtra("ANSWERTEXT", quizViewModel.currentQuestionAnswer)
+            startActivity(intentToCheat)
+        }
+
         binding.Previous.setOnClickListener{ view: View ->
-            if (currentIndex == 0) {
+            if (quizViewModel.currentIndex == 0) {
                 println("cant do that")
             } else {
                 quizViewModel.moveToPrevious()
@@ -41,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.Next.setOnClickListener{ view: View ->
-            if (currentIndex + 1 == quizViewModel.questions.size) {
+            if (quizViewModel.currentIndex + 1 == quizViewModel.questions.size) {
                 Log.w("cant do that", "cant do that")
             } else {
                 quizViewModel.moveToNext()
@@ -50,13 +61,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.trueButton.setOnClickListener{ view: View ->
-            val correct = quizViewModel.questions[currentIndex].isCorrectAnswer(true)
+            val correct = quizViewModel.questions[quizViewModel.currentIndex].isCorrectAnswer(true)
             nextQuestion(correct)
 
         }
 
         binding.falseButton.setOnClickListener{ view: View ->
-            val correct = quizViewModel.questions[currentIndex].isCorrectAnswer(false)
+            val correct = quizViewModel.questions[quizViewModel.currentIndex].isCorrectAnswer(false)
             nextQuestion(correct)
         }
 
@@ -64,10 +75,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showQuestion() {
-        val question = quizViewModel.questions[currentIndex]
-        binding.questionNum.text = "Question: ${currentIndex + 1}"
+        val question = quizViewModel.questions[quizViewModel.currentIndex]
+        binding.questionNum.text = "Question: ${quizViewModel.currentIndex + 1}"
         binding.questionText.text = question.text
-        if (quizViewModel.questions[currentIndex].answered) {
+        if (quizViewModel.questions[quizViewModel.currentIndex].answered) {
             binding.trueButton.isEnabled = false
             binding.falseButton.isEnabled = false
         } else {
@@ -90,12 +101,18 @@ class MainActivity : AppCompatActivity() {
 
             binding.trueButton.isEnabled = true
             binding.falseButton.isEnabled = true
-            currentIndex++
+            quizViewModel.moveToNext()
 
-            if (currentIndex >= quizViewModel.questions.size) {
-                println("congrats you finished the questionnaire")
-                binding.trueButton.isEnabled = false
-                binding.falseButton.isEnabled = false
+            if (quizViewModel.currentIndex >= quizViewModel.questions.size) {
+                if (!cheated){
+                    println("congrats you finished the questionnaire")
+                    binding.trueButton.isEnabled = false
+                    binding.falseButton.isEnabled = false
+                } else {
+                    println("booooo you cheated the questionnaire")
+                    binding.trueButton.isEnabled = false
+                    binding.falseButton.isEnabled = false
+                }
             } else {
                 showQuestion()
             }

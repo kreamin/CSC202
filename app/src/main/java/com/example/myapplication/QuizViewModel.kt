@@ -1,3 +1,4 @@
+import android.util.Log
 import androidx.lifecycle.ViewModel
 
 interface Question {
@@ -40,15 +41,18 @@ class QuizViewModel : ViewModel() {
         TrueFalseQuestion("An octopus has three hearts.", true)
     )
 
-    private var currentIndex: Int = 0
+    public var currentIndex: Int = 0
     val currentQuestionAnswer: Boolean
         get() = questions[currentIndex].correctAnswer
     val currentQuestionText: String
         get() = questions[currentIndex].text
     fun moveToNext() {
-        currentIndex = (currentIndex + 1) % questions.size
+        Log.d("a", "a")
+        //currentIndex = (currentIndex + 1) % questions.size
+        currentIndex++
     }
     fun moveToPrevious() {
-        currentIndex = (currentIndex - 1) % questions.size
+        //currentIndex = (currentIndex - 1) % questions.size
+        currentIndex++
     }
 }
